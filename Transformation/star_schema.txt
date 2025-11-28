@@ -1,0 +1,82 @@
+ ////////////////////////////////////////////////////
+// PROJECT
+////////////////////////////////////////////////////
+
+Project Superstore_Analytics {
+  database_type: "PostgreSQL"
+}
+
+////////////////////////////////////////////////////
+// DIMENSION TABLES
+////////////////////////////////////////////////////
+
+Table Dim_Time {
+  time_key int [pk]
+  date date [not null, unique]
+  year int
+  quarter varchar
+  month int
+  month_name varchar
+  week int
+  day int
+  day_of_week int
+  day_of_year int
+}
+
+Table Dim_Customer {
+  customer_key int [pk]
+  customer_id varchar [not null, unique]
+  customer_name varchar
+  segment varchar
+  country varchar
+  city varchar
+  state varchar
+  postal_code varchar
+  region varchar
+}
+
+Table Dim_Product {
+  product_key int [pk]
+  product_id varchar [not null, unique]
+  product_name varchar
+  category varchar
+  sub_category varchar
+}
+
+Table Dim_Shipment {
+  ship_key int [pk]
+  ship_mode varchar
+  ship_date date
+}
+
+Table Dim_Order {
+  order_key int [pk]
+  order_id varchar [not null, unique]
+  order_date date
+}
+
+////////////////////////////////////////////////////
+// FACT TABLES
+////////////////////////////////////////////////////
+
+Table Fact_Sales {
+  row_id int [pk]
+
+  order_key int [not null]
+  customer_key int [not null]
+  product_key int [not null]
+  ship_key int [not null]
+  time_key int [not null]
+
+  sales decimal [not null]
+}
+
+////////////////////////////////////////////////////
+// RELATIONSHIPS
+////////////////////////////////////////////////////
+
+Ref: Fact_Sales.order_key > Dim_Order.order_key
+Ref: Fact_Sales.customer_key > Dim_Customer.customer_key
+Ref: Fact_Sales.product_key > Dim_Product.product_key
+Ref: Fact_Sales.ship_key > Dim_Shipment.ship_key
+Ref: Fact_Sales.time_key > Dim_Time.time_key
